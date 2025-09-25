@@ -1,0 +1,314 @@
+<!--DOCTYPE html-->
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Nande Nihon</title>
+    <link rel="icon" type="image/png" href="../asset/img/Favicon.PNG">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+                <p>Nande Nihon CMS</p>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-item">
+                    <button class="nav-button active" data-section="dashboard">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                        </svg>
+                        Dashboard
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-section="team">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H17c-.8 0-1.54.37-2.01.99L12 11l-2.99-2.01A2.5 2.5 0 0 0 7 8H5.46c-.8 0-1.54.37-2.01.99L1 14.37 3.5 22H6v-6h2v6h2v-6h2v6h2v-6h2v6h2z" />
+                        </svg>
+                        Team
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-section="testimoni">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v14l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                        </svg>
+                        Testimoni
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-section="gallery">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M21 19V5a2 2 0 0 0-2-2H5C3.89 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14c1.11 0 2-.9 2-2zM8.5 13.5 11 16l3.5-4.5L19 18H5l3.5-4.5zM8 8a2 2 0 1 1 .001 3.999A2 2 0 0 1 8 8z" />
+                        </svg>
+                        Gallery
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-section="kelas-n5">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 17H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z" />
+                        </svg>
+                        Kelas N5
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-section="kelas-n4">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 17H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z" />
+                        </svg>
+                        Kelas N4
+                    </button>
+                </div>
+
+            </nav>
+            <button class="logout-btn" id="logoutBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px; margin-right: 8px;">
+                    <path
+                        d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" />
+                </svg>
+                Logout
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="topbar">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="user-info">
+                    <span id="userEmail">admin@nandenihon.com</span>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <!-- Dashboard Overview -->
+                <div id="dashboard-section" class="section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Team Members</h3>
+                            <div class="number" id="teamCount">0</div>
+                            
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Testimonials</h3>
+                            <div class="number" id="testimoniCount">0</div>
+                            
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pendaftar Kelas N4</h3>
+                            <div class="number" id="registrations_n4Count">0</div>
+                            
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pendaftar Kelas N5</h3>
+                            <div class="number" id="registrationsCount">0</div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Recent Activity</h3>
+                            <button class="btn" onclick="loadSection('team')">View All</button>
+                        </div>
+                        <div id="recentActivity">
+                            <div class="loading">Loading recent activity...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Management -->
+                <div id="team-section" class="section">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Team Members</h3>
+                            <button class="btn" onclick="openModal('team')">Add Member</button>
+                        </div>
+                        <div id="teamTable">
+                            <div class="loading">Loading team members...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Gallery-->
+                <!-- Gallery Management -->
+                <div id="gallery-section" class="section">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Gallery</h3>
+                            <!-- opsional: tombol refresh -->
+                            <button class="btn" id="refreshGalleryBtn">Refresh</button>
+                        </div>
+                        <div id="galleryGrid">
+                            <div class="loading">Loading gallery...</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Testimoni Management -->
+                <div id="testimoni-section" class="section">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Testimonials</h3>
+                            <button class="btn" onclick="openModal('testimoni')">Add Testimonial</button>
+                        </div>
+                        <div id="testimoniTable">
+                            <div class="loading">Loading testimonials...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes/Articles Management -->
+                <div id="notes-section" class="section">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Articles</h3>
+                            <button class="btn" onclick="openModal('notes')">Add Article</button>
+                        </div>
+                        <div id="notesTable">
+                            <div class="loading">Loading articles...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kelas N5 Management -->
+                <div id="kelas-n5-section" class="section" style="display:none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Pendaftaran Kelas N5</h3>
+                            <div class="export-actions" style="margin:12px 0; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button id="btn-export-csv" class="btn">Export CSV</button>
+                            <button id="btn-export-xlsx" class="btn outline">Export Excel (.xlsx)</button>
+                            </div>
+
+                            <!-- (opsional) jika mau dukung .xlsx, tambahkan script SheetJS -->
+                            <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+                            <button class="btn" id="refreshRegistrationsBtn">Refresh</button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table class="data-table" id="registrationsTable" style="width:100%;min-width:700px;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Nama Panggilan</th>
+                                        <th>Usia</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Domisili</th>
+                                        <th>WhatsApp</th>
+                                        <th>Email</th>
+                                        <th>Instagram</th>
+                                        <th>Kemampuan Jepang</th>
+                                        <th>Motivasi</th>
+                                        <th>Sumber</th>
+                                        <th>Follow IG</th>
+                                        <th>Share</th>
+                                        <th>Waktu Daftar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registrationsTableBody">
+                                    <tr><td colspan="15" style="text-align:center;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kelas N4 Management -->
+                <div id="kelas-n4-section" class="section" style="display:none;">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Pendaftaran Kelas N4</h3>
+                            <div class="export-actions" style="margin:12px 0; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button id="btn-export-csv" class="btn">Export CSV</button>
+                            <button id="btn-export-xlsx" class="btn outline">Export Excel (.xlsx)</button>
+                            </div>
+
+                            <!-- (opsional) jika mau dukung .xlsx, tambahkan script SheetJS -->
+                            <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+                            <button class="btn" id="refreshRegistrationsBtn">Refresh</button>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table class="data-table" id="registrations_n4Table" style="width:100%;min-width:700px;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Nama Panggilan</th>
+                                        <th>Usia</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Domisili</th>
+                                        <th>WhatsApp</th>
+                                        <th>Email</th>
+                                        <th>Instagram</th>
+                                        <th>Kemampuan Jepang</th>
+                                        <th>Motivasi</th>
+                                        <th>Sumber</th>
+                                        <th>Follow IG</th>
+                                        <th>Share</th>
+                                        <th>Waktu Daftar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registrations_n4TableBody">
+                                    <tr><td colspan="15" style="text-align:center;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Item</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+    <script>
+    // Section switching logic
+    document.querySelectorAll('.nav-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+            if (this.dataset.section === "Kelas N5") {
+                document.getElementById('kelas-n5-section').classList.add('active');
+                document.getElementById('kelas-n5-section').style.display = '';
+            } else if (this.dataset.section) {
+                const sec = document.getElementById(this.dataset.section.toLowerCase() + '-section');
+                if (sec) {
+                    sec.classList.add('active');
+                    sec.style.display = '';
+                }
+            }
+            // Update page title
+            const pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) pageTitle.textContent = this.textContent.trim();
+        });
+    });
+    </script>
+</body>
+
+</html>

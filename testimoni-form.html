@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tambah Testimoni</title>
+  <style>
+    :root{ color-scheme: light; }
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:24px; background:#f9fafb; }
+    h1{ margin:0 0 16px; }
+    form{ max-width:640px; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,.05); }
+    .row{ display:grid; gap:6px; margin-bottom:12px; }
+    label{ font-size:14px; color:#374151; }
+    input, textarea{
+      width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; background:#fff;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    .actions{ display:flex; gap:8px; align-items:center; margin-top:8px; }
+    button{
+      background:#2563eb; color:#fff; border:0; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:600;
+    }
+    button[disabled]{ opacity:.6; cursor:not-allowed; }
+    .msg{ margin-top:10px; font-size:14px; }
+    .msg.error{ color:#b91c1c; }
+    .msg.success{ color:#16a34a; }
+    /* Preview */
+    .preview{ margin-top:18px; max-width:640px; background:#fff; border:1px dashed #d1d5db; border-radius:12px; padding:14px; }
+    .avatar{ width:84px; height:84px; border-radius:50%; object-fit:cover; display:block; }
+    .stack{ display:flex; gap:12px; align-items:center; }
+    .muted{ color:#6b7280; font-size:13px; }
+  </style>
+</head>
+<body>
+  <h1>Tambah Testimoni</h1>
+
+  <form id="testi-form" autocomplete="on" novalidate>
+    <div class="row">
+      <label for="name">Nama <span class="muted">(wajib)</span></label>
+      <input id="name" name="name" type="text" required />
+    </div>
+
+    <div class="row">
+      <label for="old">Usia</label>
+      <input id="old" name="old" type="number" min="0" inputmode="numeric" placeholder="contoh: 25" />
+    </div>
+
+    <div class="row">
+      <label for="image">URL Foto</label>
+      <input id="image" name="image" type="url" placeholder="https://.../avatar.jpg" />
+      <span class="muted">Untuk upload file langsung, gunakan Supabase Storage (bisa saya tambahkan jika perlu).</span>
+    </div>
+
+    <div class="row">
+      <label for="text_testi">Isi Testimoni <span class="muted">(wajib)</span></label>
+      <textarea id="text_testi" name="text_testi" required placeholder="Tulis pengalaman/testimoni di sini..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="submit" id="submitBtn">Simpan</button>
+      <span class="muted">Menambahkan baris ke <code>public.testimoni</code>.</span>
+    </div>
+
+    <div id="msg" class="msg" aria-live="polite"></div>
+  </form>
+
+  <div class="preview" id="preview">
+    <div class="stack">
+      <img id="previewImg" class="avatar" src="https://placehold.co/84" alt="Foto" />
+      <div>
+        <div><strong id="previewName">—</strong> <span class="muted" id="previewOld"></span></div>
+        <div id="previewText" class="muted">Isi testimoni akan tampil di sini…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase via CDN -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // TODO: ganti dengan kredensial proyekmu
+    const SUPABASE_URL = 'https://bpzeveffsxawqdbojkfu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwemV2ZWZmc3hhd3FkYm9qa2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0ODkxOTMsImV4cCI6MjA3MzA2NTE5M30.LzL2-yLVxC3Gh6-a-nF5kAEi3vhc-ENMGctpBbuLdhA';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('testi-form');
+    const msg = document.getElementById('msg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // live preview
+    const pvImg = document.getElementById('previewImg');
+    const pvName = document.getElementById('previewName');
+    const pvOld = document.getElementById('previewOld');
+    const pvText = document.getElementById('previewText');
+
+    form.addEventListener('input', () => {
+      const name = form.name.value.trim();
+      const old = form.old.value.trim();
+      const image = form.image.value.trim();
+      const text = form.text_testi.value.trim();
+
+      pvName.textContent = name || '—';
+      pvOld.textContent = old ? `• ${old} tahun` : '';
+      pvText.textContent = text || 'Isi testimoni akan tampil di sini…';
+      pvImg.src = image || 'https://placehold.co/84';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg();
+
+      const name = form.name.value.trim();
+      const text_testi = form.text_testi.value.trim();
+      if (!name) return showError('Nama wajib diisi.');
+      if (!text_testi) return showError('Isi testimoni wajib diisi.');
+
+      const payload = {
+        name,
+        old: toIntOrNull(form.old.value),
+        image: toNull(form.image.value),
+        text_testi
+      };
+
+      setLoading(true);
+      const { error } = await supabase.from('testimoni').insert(payload);
+      setLoading(false);
+
+      if (error) return showError(error.message);
+
+      showSuccess('Testimoni berhasil ditambahkan.');
+      form.reset();
+      form.dispatchEvent(new Event('input')); // refresh preview
+    });
+
+    // Helpers
+    function toNull(v){ const s=(v||'').trim(); return s? s : null; }
+    function toIntOrNull(v){ const n=parseInt((v||'').trim(),10); return Number.isFinite(n) ? n : null; }
+    function showError(t){ msg.className='msg error'; msg.textContent=t; }
+    function showSuccess(t){ msg.className='msg success'; msg.textContent=t; }
+    function clearMsg(){ msg.className='msg'; msg.textContent=''; }
+    function setLoading(b){ submitBtn.disabled=b; submitBtn.textContent=b?'Menyimpan…':'Simpan'; }
+  </script>
+</body>
+</html>
