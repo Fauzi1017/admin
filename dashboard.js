@@ -516,8 +516,8 @@ function normalizeRegistrationRow(row) {
   const fullName = row.fullName ?? row.full_name ?? row.namaLengkap ?? row.nama_lengkap ?? row.name ?? '';
 
   // Normalisasi kemampuan Jepang
-  const japaneseSkill =
-    row.japaneseSkill ?? row.japanese_level ?? row.kemampuanJepang ?? row.kemampuan_jepang ?? '';
+  const japanese_skill =
+    row.japanese_skill ?? row.japanese_level ?? row.kemampuanJepang ?? row.kemampuan_jepang ?? '';
 
   // Normalisasi boolean is_followed
   const rawFollowed = row.is_followed ?? row.isFollowed ?? row.followed ?? row.follow ?? false;
@@ -525,22 +525,36 @@ function normalizeRegistrationRow(row) {
     ? ['true','1','t','yes','y'].includes(rawFollowed.toLowerCase())
     : !!rawFollowed;
 
+const rawShare = row.is_willing_to_share ?? row.iswilling_to_share ?? row.share ?? false;
+  const iswilling_to_share = (typeof rawShare === 'string')
+    ? ['true','1','t','yes','y'].includes(rawShare.toLowerCase())
+    : !!rawShare;
+
   // Field umum lain (silakan sesuaikan dengan tabelmu)
   const phone = row.phone ?? row.whatsapp ?? row.no_wa ?? '';
   const email = row.email ?? '';
-  const city  = row.city ?? row.kota ?? '';
+  const domicile  = row.domicile ?? row.kota ?? '';
   const createdAt = row.created_at ?? row.createdAt ?? row.inserted_at ?? '';
-  const notes = row.notes ?? row.catatan ?? '';
+  const nickname = row.nickname ?? row.nama_panggilan ?? row.namaPanggilan ?? '';
+  const age = row.age ?? row.usia ?? '';
+  const gender = row.gender ?? row.jenis_kelamin ?? '';
+  const motivation = row.motivation ?? row.motivasi ?? '';
+  const source = row.sourceOther ? row.sourceOther : (row.source ?? '');
 
   return {
     fullName,
-    japaneseSkill,
+    nickname,
+    age,
+    gender,
+    motivation,
+    source,
+    japanese_skill,
     isFollowed,
     phone,
     email,
-    city,
+    domicile,
     createdAt,
-    notes
+    iswilling_to_share
   };
 }
 
@@ -646,23 +660,66 @@ function exportRegistrationsToXLSX(filename = `registrations-${new Date().toISOS
   const rows = (window.__lastRegistrations || []).map(normalizeRegistrationRow);
 
   const dataAoa = [
-    ['Nama Lengkap','Kemampuan Jepang','Diikuti?','No. WA/Telepon','Email','Kota','Tanggal Daftar','Catatan'],
+    ['Nama Lengkap','Nama Panggilan','Usia','Jenis Kelamin','Motivasi','Sumber','Kemampuan Jepang','Mengikuti IG?','Share','No. WA/Telepon','Email','Kota','Tanggal Daftar','Catatan'],
     ...rows.map(r => [
       r.fullName,
-      r.japaneseSkill,
+      r.nickname,
+      r.age,
+      r.gender,
+      r.motivation,
+      r.source,
+      r.japanese_skill,
       r.isFollowed ? 'Ya' : 'Tidak',
+      r.shared ? 'Tidak' : 'Ya',
       r.phone,
       r.email,
-      r.city,
+      r.domicile,
       r.createdAt,
-      r.notes
+      
     ])
   ];
+
+ 
 
   const ws = XLSX.utils.aoa_to_sheet(dataAoa);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Registrations');
   XLSX.writeFile(wb, filename);
+}
+
+// Export XLSX for registrations_n4 table
+function exportRegistrationsN4ToXLSX(filename = `registrations_n4-${new Date().toISOString().slice(0,10)}.xlsx`) {
+    if (typeof XLSX === 'undefined' || !XLSX || !XLSX.utils) {
+        alert('Fitur Excel membutuhkan SheetJS. Pastikan script XLSX sudah dimuat.');
+        return;
+    }
+
+    const rows = (window.__lastRegistrations || []).map(normalizeRegistrationRow);
+
+    const dataAoa = [
+        ['Nama Lengkap','Nama Panggilan','Usia','Jenis Kelamin','Motivasi','Sumber','Kemampuan Jepang','Mengikuti IG?','Share','No. WA/Telepon','Email','Kota','Tanggal Daftar','Catatan'],
+        ...rows.map(r => [
+            r.fullName,
+            r.nickname,
+            r.age,
+            r.gender,
+            r.motivation,
+            r.source,
+            r.japanese_skill,
+            r.isFollowed ? 'Ya' : 'Tidak',
+            r.iswilling_to_share ? 'Ya' : 'Tidak',
+            r.phone,
+            r.email,
+            r.domicile,
+            r.createdAt,
+            r.notes
+        ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(dataAoa);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Registrations_N4');
+    XLSX.writeFile(wb, filename);
 }
 
 
@@ -866,11 +923,20 @@ async function deleteItem(type, id) {
 
 // Export registrations button
 document.addEventListener('DOMContentLoaded', () => {
-  const btnCsv  = document.getElementById('btn-export-csv');
-  const btnXlsx = document.getElementById('btn-export-xlsx');
+    // Export buttons for Kelas N5
+    const btnCsvN5  = document.getElementById('btn-export-csv');
+    const btnXlsxN5 = document.getElementById('btn-export-xlsx');
+    if (btnCsvN5)  btnCsvN5.addEventListener('click',  () => exportRegistrationsToCSV());
+    if (btnXlsxN5) btnXlsxN5.addEventListener('click', () => exportRegistrationsToXLSX());
 
-  if (btnCsv)  btnCsv.addEventListener('click',  () => exportRegistrationsToCSV());
-  if (btnXlsx) btnXlsx.addEventListener('click', () => exportRegistrationsToXLSX());
+    // Export buttons for Kelas N4
+    const kelasN4Section = document.getElementById('kelas-n4-section');
+    if (kelasN4Section) {
+        const btnCsvN4  = kelasN4Section.querySelector('#btn-export-csv');
+        const btnXlsxN4 = kelasN4Section.querySelector('#btn-export-xlsx');
+        if (btnCsvN4)  btnCsvN4.addEventListener('click',  () => exportRegistrationsToCSV());
+        if (btnXlsxN4) btnXlsxN4.addEventListener('click', () => exportRegistrationsN4ToXLSX());
+    }
 });
 
 
